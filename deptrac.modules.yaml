@@ -1,0 +1,47 @@
+imports:
+    - deptrac.base.yaml
+    - deptrac.modules.baseline.yaml
+
+parameters:
+    layers:
+        -   name: Vendor
+            collectors:
+                -   type: bool
+                    must: [ { type: className, value: ((.+\\.*)|.*_.*) } ]
+                    must_not: [ { type: directory, value: src/.* } ]
+        # Shared
+        ### Haystack
+        -   name: Haystack
+            collectors: [ { type: directory, regex: src/Shared/Haystack/.* } ]
+
+        # Modules
+        ### Foo
+        -   name: Foo_Upstream
+            collectors: [ { type: directory, regex: src/Module/Foo/UserInterface/.* } ]
+        -   name: Foo_Downstream
+            collectors: [ { type: directory, regex: src/Module/Foo/Infrastructure/.* } ]
+        -   name: Foo
+            collectors:
+                -   type: bool
+                    must: [ { type: directory, regex: src/Module/Foo/.* } ]
+                    must_not: [ { type: layer, layer: Foo_Downstream } ]
+
+        ### Bar
+        -   name: Bar_Upstream
+            collectors: [ { type: directory, regex: src/Module/Bar/UserInterface/.* } ]
+        -   name: Bar_Downstream
+            collectors: [ { type: directory, regex: src/Module/Bar/Infrastructure/.* } ]
+        -   name: Bar
+            collectors:
+                -   type: bool
+                    must: [ { type: directory, regex: src/Module/Bar/.* } ]
+                    must_not: [ { type: layer, layer: Bar_Upstream }, { type: layer, layer: Bar_Downstream } ]
+
+    ruleset:
+        Haystack: [ Vendor ]
+        Foo: [ Haystack ]
+        Foo_Upstream: [ Vendor ]
+        Foo_Downstream: [ Bar_Upstream, Vendor ]
+        Bar: [ Vendor ]
+        Bar_Upstream: [ Vendor ]
+        Bar_Downstream: [ Vendor ]
