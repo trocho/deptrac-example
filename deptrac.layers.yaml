@@ -1,37 +1,59 @@
 imports:
-    - deptrac.base.yaml
-    - deptrac.layers.baseline.yaml
+  - deptrac.base.yaml
+  - deptrac.layers.baseline.yaml
 
 parameters:
-    layers:
-        -   name: Vendor
-            collectors:
-                -   type: bool
-                    must: [ { type: className, value: ((.+\\.*)|.*_.*) } ]
-                    must_not: [ { type: directory, value: src/.* } ]
+  layers:
+    - name: Vendor
+      collectors:
+        - type: bool
+          must: [ { type: className, value: ((.+\\.*)|.*_.*) } ]
+          must_not: [ { type: directory, value: src/.* } ]
 
-        -   name: Domain
-            collectors: [ { type: directory, regex: src/(Module|Shared)/.*/Domain/.* } ]
+    # Hexagonal
+    - name: Domain
+      collectors: [ { type: directory, regex: src/(Module|Shared)/.*/Domain/.* } ]
 
-        -   name: Application
-            collectors: [ { type: directory, regex: src/(Module|Shared)/.*/Application/.* } ]
+    - name: Application
+      collectors: [ { type: directory, regex: src/(Module|Shared)/.*/Application/.* } ]
 
-        -   name: Infrastructure
-            collectors: [ { type: directory, regex: src/(Module|Shared)/.*/Infrastructure/.* } ]
+    - name: Infrastructure
+      collectors: [ { type: directory, regex: src/(Module|Shared)/.*/Infrastructure/.* } ]
 
-        -   name: UserInterface
-            collectors: [ { type: directory, regex: src/(Module|Shared)/.*/UserInterface/.* } ]
+    - name: UserInterface
+      collectors: [ { type: directory, regex: src/(Module|Shared)/.*/UserInterface/.* } ]
 
-    ruleset:
-        Vendor: ~
-        Domain: ~
-        Application:
-            - Domain
-        UserInterface:
-            - Application
-            - Vendor
-        Infrastructure:
-            - UserInterface
-            - Application
-            - Domain
-            - Vendor
+    # Mvc
+    - name: Model
+      collectors: [ { type: directory, regex: src/Module/.*/Model/.* } ]
+
+    - name: View
+      collectors: [ { type: directory, regex: src/Module/.*/View/.* } ]
+
+    - name: Controller
+      collectors: [ { type: directory, regex: src/Module/.*/Controller/.* } ]
+
+    - name: Facade
+      collectors: [ { type: className, value: Module\\Mvc\\.*Facade } ]
+
+  ruleset:
+    Vendor: ~
+
+    # Hexagonal
+    Domain: ~
+    Application:
+      - Domain
+    UserInterface:
+      - Application
+      - Vendor
+    Infrastructure:
+      - UserInterface
+      - Application
+      - Domain
+      - Facade
+      - Vendor
+
+    # Mvc
+    Model: [ Vendor ] # it could be a specific vendor insted all of them
+    View: [ Vendor ] # it could be a specific vendor insted all of them
+    Controller: [ View, Model, Vendor ]

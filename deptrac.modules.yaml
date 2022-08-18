@@ -11,8 +11,8 @@ parameters:
                     must_not: [ { type: directory, value: src/.* } ]
 
         # Shared
-        ### Haystack
-        -   name: Haystack
+        ### Haystack_Midway
+        -   name: Haystack_Midway
             collectors: [ { type: directory, regex: src/Shared/Haystack/.* } ]
 
         # Modules
@@ -38,11 +38,25 @@ parameters:
                     must: [ { type: directory, regex: src/Module/Bar/.* } ]
                     must_not: [ { type: layer, layer: Bar_Upstream }, { type: layer, layer: Bar_Downstream } ]
 
+        ### Mvc
+        -   name: Mvc_Upstream
+            collectors: [ { type: className, value: Module\\Mvc\\MvcFacade } ]
+        -   name: Mvc
+            collectors:
+                -   type: bool
+                    must: [ { type: directory, regex: src/Module/Mvc/.* } ]
+                    must_not: [ { type: layer, layer: Mvc_Upstream }, { type: layer, layer: Mvc_Downstream } ]
+
     ruleset:
-        Haystack: [ Vendor ]
-        Foo: [ Haystack ]
-        Foo_Upstream: [ Vendor ]
+        Haystack_Midway: [ Vendor ]
+
+        Foo: [ Haystack_Midway ]
+        Foo_Upstream: [ Foo, Vendor ]
         Foo_Downstream: [ Bar_Upstream, Vendor ]
-        Bar: [ Vendor ]
-        Bar_Upstream: [ Vendor ]
-        Bar_Downstream: [ Vendor ]
+
+        Bar: ~
+        Bar_Upstream: [ Bar, Vendor ]
+        Bar_Downstream: [ Mvc_Upstream, Vendor ]
+
+        Mvc: [ Vendor ]
+        Mvc_Upstream: [ Mvc, Vendor ]
