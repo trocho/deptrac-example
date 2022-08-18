@@ -1,62 +1,68 @@
+# Place for definitions of modules.
+
 imports:
     - deptrac.base.yaml
     - deptrac.modules.baseline.yaml
 
 parameters:
-    layers:
-        -   name: Vendor
-            collectors:
-                -   type: bool
-                    must: [ { type: className, value: ((.+\\.*)|.*_.*) } ]
-                    must_not: [ { type: directory, value: src/.* } ]
+  layers:
+    - name: Vendor
+      collectors:
+        - type: bool
+          must: [ { type: className, value: ((.+\\.*)|.*_.*) } ]
+          must_not: [ { type: directory, value: src/.* } ]
 
-        # Shared
-        ### Haystack_Midway
-        -   name: Haystack_Midway
-            collectors: [ { type: directory, regex: src/Shared/Haystack/.* } ]
+    # === Shared ===
+    # The shared part is for common concept whitch can has integration on the same
+    - name: Haystack_Midway
+      collectors: [ { type: directory, regex: src/Shared/Haystack/.* } ]
 
-        # Modules
-        ### Foo
-        -   name: Foo_Upstream
-            collectors: [ { type: directory, regex: src/Module/Foo/UserInterface/.* } ]
-        -   name: Foo_Downstream
-            collectors: [ { type: directory, regex: src/Module/Foo/Infrastructure/.* } ]
-        -   name: Foo
-            collectors:
-                -   type: bool
-                    must: [ { type: directory, regex: src/Module/Foo/.* } ]
-                    must_not: [ { type: layer, layer: Foo_Downstream } ]
+    # === Modules ===
+    ### Foo
+    # For each module can be required couple of layers.
+    - name: Foo_Upstream # An Upstream Layer using by other to integrate with the module.
+      collectors: [ { type: directory, regex: src/Module/Foo/UserInterface/.* } ]
+    - name: Foo_Downstream # A Downstream Layer where integrations fot he module with others are kept.
+      collectors: [ { type: directory, regex: src/Module/Foo/Infrastructure/.* } ]
+    - name: Foo # Body of module. There shouldn't be dependencies to another unless with Shared modules.
+      collectors:
+        - type: bool
+          must: [ { type: directory, regex: src/Module/Foo/.* } ]
+          # The Must section above includes the Upstream and Downstream files so we have to exclude like in following example.
+          # One file can be in just one layer.
+          must_not: [ { type: layer, layer: Foo_Downstream } ]
 
-        ### Bar
-        -   name: Bar_Upstream
-            collectors: [ { type: directory, regex: src/Module/Bar/UserInterface/.* } ]
-        -   name: Bar_Downstream
-            collectors: [ { type: directory, regex: src/Module/Bar/Infrastructure/.* } ]
-        -   name: Bar
-            collectors:
-                -   type: bool
-                    must: [ { type: directory, regex: src/Module/Bar/.* } ]
-                    must_not: [ { type: layer, layer: Bar_Upstream }, { type: layer, layer: Bar_Downstream } ]
+    ### Bar
+    - name: Bar_Upstream
+      collectors: [ { type: directory, regex: src/Module/Bar/UserInterface/.* } ]
+    - name: Bar_Downstream
+      collectors: [ { type: directory, regex: src/Module/Bar/Infrastructure/.* } ]
+    - name: Bar
+      collectors:
+        - type: bool
+          must: [ { type: directory, regex: src/Module/Bar/.* } ]
+          must_not: [ { type: layer, layer: Bar_Upstream }, { type: layer, layer: Bar_Downstream } ]
 
-        ### Mvc
-        -   name: Mvc_Upstream
-            collectors: [ { type: className, value: Module\\Mvc\\MvcFacade } ]
-        -   name: Mvc
-            collectors:
-                -   type: bool
-                    must: [ { type: directory, regex: src/Module/Mvc/.* } ]
-                    must_not: [ { type: layer, layer: Mvc_Upstream }, { type: layer, layer: Mvc_Downstream } ]
+    ### Mvc
+    - name: Mvc_Upstream
+      collectors: [ { type: className, value: Module\\Mvc\\MvcFacade } ]
+    - name: Mvc
+      collectors:
+        - type: bool
+          must: [ { type: directory, regex: src/Module/Mvc/.* } ]
+          must_not: [ { type: layer, layer: Mvc_Upstream } ]
 
-    ruleset:
-        Haystack_Midway: [ Vendor ]
+  # Place where allowings of dependencies are defined between modules
+  ruleset:
+    Haystack_Midway: [ Vendor ]
 
-        Foo: [ Haystack_Midway ]
-        Foo_Upstream: [ Foo, Vendor ]
-        Foo_Downstream: [ Bar_Upstream, Vendor ]
+    Foo: [ Haystack_Midway ] # The Foo module can have dependencies to Haystack_Midway and so on with following.
+    Foo_Upstream: [ Foo, Vendor ]
+    Foo_Downstream: [ Bar_Upstream, Vendor ]
 
-        Bar: ~
-        Bar_Upstream: [ Bar, Vendor ]
-        Bar_Downstream: [ Mvc_Upstream, Vendor ]
+    Bar: ~
+    Bar_Upstream: [ Bar, Vendor ]
+    Bar_Downstream: [ Mvc_Upstream, Vendor ]
 
-        Mvc: [ Vendor ]
-        Mvc_Upstream: [ Mvc, Vendor ]
+    Mvc: [ Vendor ]
+    Mvc_Upstream: [ Mvc, Vendor ]
