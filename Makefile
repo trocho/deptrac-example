@@ -1,5 +1,9 @@
 DEPTRAC:=docker run --rm -v ${PWD}:/deptrac -w /deptrac php:8.1 php bin/deptrac.phar analyse
 
+.PHONY: all
+
+all: layers modules
+
 layers:
 	${DEPTRAC} --config-file=deptrac.layers.yaml --report-uncovered --fail-on-uncovered
 
@@ -9,5 +13,5 @@ layers-baseline:
 modules:
 	${DEPTRAC} --config-file=deptrac.modules.yaml --report-uncovered --fail-on-uncovered
 
-layers-baseline:
+modules-baseline:
 	${DEPTRAC} --config-file=deptrac.modules.yaml --formatter=baseline --output=deptrac.modules.baseline.yaml

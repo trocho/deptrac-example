@@ -5,13 +5,16 @@ imports:
 parameters:
   layers:
     - name: SPL
-      collectors: [ { type: className, regex: ^(Psr\\.*|Spl.*) } ]
+      collectors: [ { type: className, regex: ^Spl.* } ]
+
+    - name: PSR
+      collectors: [ { type: className, regex: ^Psr\\.* } ]
 
     - name: Vendor
       collectors:
         - type: bool
           must: [ { type: className, value: ((.+\\.*)|.*_.*) } ]
-          must_not: [ { type: directory, value: src/.* }, { type: layer, layer: SPL } ]
+          must_not: [ { type: directory, value: src/.* }, { type: layer, layer: SPL }, { type: layer, layer: PSR } ]
 
     # Hexagonal
     - name: Domain
@@ -45,7 +48,7 @@ parameters:
     # Hexagonal
     Domain: ~
     Application: [ Domain, SPL ]
-    UserInterface: [ Application, Vendor ]
+    UserInterface: [ Application, PSR, Vendor ]
     Infrastructure: [ UserInterface, Application, Domain, Facade, Vendor ]
 
     # Mvc
