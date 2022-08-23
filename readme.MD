@@ -4,8 +4,8 @@ Three-level architecture testing for PHP with Deptrac.
 
 For applications split to modules or Bounded Contexts the 
 architecture tests are important on three levels:
-1. **Layers** - dependencies between them, 
-2. **Modules** - which modules can communicate with another, 
+1. **Layers** - dependencies between them;
+2. **Modules** - which modules can communicate with another;
 3. **Integrations** - how the integrations between modules should look like.
 
 If you have a simple application, a microservice for example 
