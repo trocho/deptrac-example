@@ -41,19 +41,11 @@ parameters:
 
     # Hexagonal
     Domain: ~
-    Application:
-      - Domain
-    UserInterface:
-      - Application
-      - Vendor
-    Infrastructure:
-      - UserInterface
-      - Application
-      - Domain
-      - Facade
-      - Vendor
+    Application: [ Domain ]
+    UserInterface: [ Application, Vendor ]
+    Infrastructure: [ UserInterface, Application, Domain, Facade, Vendor ]
 
     # Mvc
-    Model: [ Vendor ] # it could be a specific vendor insted all of them
-    View: [ Vendor ] # it could be a specific vendor insted all of them
+    Model: [ Vendor ] # it could be a specific vendor (Doctrine) insted all of them
+    View: [ Vendor ] # it could be a specific vendor (Twig) insted all of them
     Controller: [ View, Model, Vendor ]
