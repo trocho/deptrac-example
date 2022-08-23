@@ -6,11 +6,14 @@ imports:
 
 parameters:
   layers:
+    - name: SPL
+      collectors: [ { type: className, regex: ^(Psr\\.*|Spl.*) } ]
+
     - name: Vendor
       collectors:
         - type: bool
           must: [ { type: className, value: ((.+\\.*)|.*_.*) } ]
-          must_not: [ { type: directory, value: src/.* } ]
+          must_not: [ { type: directory, value: src/.* }, { type: layer, layer: SPL } ]
 
     # === Shared ===
     # The shared part is for common concept whitch can has integration on the same
@@ -56,7 +59,7 @@ parameters:
   ruleset:
     Haystack_Midway: [ Vendor ]
 
-    Foo: [ Haystack_Midway ] # The Foo module can have dependencies to Haystack_Midway and so on with following.
+    Foo: [ Haystack_Midway, SPL ] # The Foo module can have dependencies to Haystack_Midway and so on with following.
     Foo_Upstream: [ Foo, Vendor ]
     Foo_Downstream: [ Bar_Upstream, Vendor ]
 

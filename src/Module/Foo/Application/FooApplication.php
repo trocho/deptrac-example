@@ -11,6 +11,8 @@ class FooApplication
 {
     public function test(): void
     {
+        $splFileInfoClass = \SplFileInfo::class;
+
         $sharedHaystackApplication = new SharedHaystackApplication();
         $sharedHaystackDomain = new SharedHaystackDomain();
     }
