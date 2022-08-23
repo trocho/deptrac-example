@@ -1,6 +1,6 @@
 # Deptrac Example
 
-Three-level's architecture testing for PHP with Deptrac.
+Architecture's three-level testing for PHP with Deptrac.
 
 For applications split to modules or Bounded Contexts the 
 architecture tests are important on three levels:
