@@ -8,11 +8,11 @@ architecture tests are important on three levels:
 2. **Modules** - which modules can communicate with another;
 3. **Integrations** - how the integrations between modules should look like.
 
-If you have a simple application, a microservice for example 
-you probably will need just tests for Layers. There won't 
-be modules and integration between.
+If you have a simple application, a microservice without modules for example,
+you probably will need just tests for Layers.
 
-If you are interested in more you can read more on my blog's post about it.
+If you are interested in more you can read more on my blog's post about it -
+https://patryktrochowski.com/three-level-architecture-testing-for-php-with-deptrac/
 
 ## How to run
 Check Makefile for available task.
