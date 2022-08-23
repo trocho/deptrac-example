@@ -12,7 +12,7 @@ If you have a simple application, a microservice without modules for example,
 you probably will need just tests for Layers.
 
 If you are interested in more you can read more on my blog's post about it -
-https://patryktrochowski.com/three-level-architecture-testing-for-php-with-deptrac/
+https://patryktrochowski.com/architecture-three-level-testing-for-php-with-deptrac/
 
 ## How to run
 Check Makefile for available task.
