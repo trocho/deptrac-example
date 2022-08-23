@@ -15,7 +15,7 @@ If you are interested in more you can read more on my blog's post about it -
 https://patryktrochowski.com/architecture-three-level-testing-for-php-with-deptrac/
 
 ## How to run
-Check Makefile for available task.
+Check Makefile for available tasks.
 
 ## Recommendations
 
